@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volunteer Sign-Up · Ohio Craft Brewers Conference 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f3;--ink:#2a1c14;--muted:#6f6258;--line:#e3dccf;--amber:#c47a12;--amber-d:#9a5d08;--hop:#4f6f2a;--stout:#2a1c14;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1511;--ink:#f3ebe0;--muted:#b3a698;--line:#3a2e26;--amber:#e39a2d;--amber-d:#f0b25a;--hop:#8fb35a;--stout:#120d0a;--card:#241b16}}
+*{box-sizing:border-box}
+html{scroll-padding-top:1rem}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Source Sans 3",system-ui,sans-serif}
+header{background:var(--stout);color:#f3ebe0;padding:3rem 1.25rem 2.5rem}
+.wrap{max-width:820px;margin:0 auto}
+h1{font:800 clamp(2rem,6vw,3.25rem)/1.05 "Bricolage Grotesque",sans-serif;margin:0 0 .75rem;letter-spacing:-.02em}
+header p{margin:0;max-width:52ch;color:#d6c9ba}
+main{padding:1.5rem 1.25rem 4rem}
+h2{font:800 1.5rem "Bricolage Grotesque",sans-serif;margin:2.5rem 0 .25rem}
+.sub{color:var(--muted);margin:0 0 .5rem}
+.slot{display:grid;grid-template-columns:8.5rem 1fr auto;gap:.25rem 1rem;align-items:center;padding:.9rem 0;border-top:1px solid var(--line)}
+.time{font-weight:600}
+.role{font-weight:600}.note{display:block;color:var(--muted);font-size:.9rem;font-weight:400}
+.dots{display:flex;gap:.3rem;margin-top:.3rem}
+.dot{width:.7rem;height:.7rem;border-radius:50%;border:2px solid var(--amber)}
+.dot.on{background:var(--amber)}
+.left{font-size:.9rem;color:var(--muted)}
+button{font:600 1rem "Source Sans 3",sans-serif;cursor:pointer;border-radius:.4rem;border:2px solid var(--amber);background:var(--amber);color:#1c1511;padding:.5rem 1rem}
+button:hover{background:var(--amber-d);border-color:var(--amber-d);color:#fff}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.ghost:hover{border-color:var(--ink);background:transparent;color:var(--ink)}
+button:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--hop);outline-offset:2px}
+.full{color:var(--hop);font-weight:600}
+dialog{border:1px solid var(--line);border-radius:.6rem;background:var(--card);color:var(--ink);padding:1.5rem;width:min(92vw,26rem)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+label{display:block;font-weight:600;margin:.9rem 0 .25rem}
+input{width:100%;font:inherit;padding:.55rem .65rem;border:2px solid var(--line);border-radius:.4rem;background:var(--bg);color:var(--ink)}
+.hp{position:absolute;left:-9999px}
+.row{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.25rem}
+.msg{margin:.75rem 0 0;font-size:.95rem}.err{color:#c0392b}.ok{color:var(--hop)}
+footer{border-top:1px solid var(--line);padding:1rem 1.25rem;text-align:center;color:var(--muted);font-size:.9rem}
+footer a{color:inherit}
+#admin{margin-top:2rem;padding:1rem;border:1px dashed var(--line);border-radius:.5rem}
+#admin li{margin:.25rem 0}
+@media(max-width:560px){.slot{grid-template-columns:1fr auto}.time{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>Ohio Craft Brewers Conference 2027</h1>
+<p>Pick a shift and we’ll save your spot. Cincinnati · First Financial Center · January 25–27.</p>
+</div></header>
+<main class="wrap">
+<p id="status" class="sub">Loading shifts…</p>
+<div id="days"></div>
+<section id="admin" hidden>
+  <strong>Admin</strong>
+  <p class="sub">Signed in as <span id="who"></span></p>
+  <div class="row" style="justify-content:flex-start;flex-wrap:wrap">
+    <button id="seed" class="ghost">Create missing shifts</button>
+    <button id="load" class="ghost">Load sign-ups</button>
+    <button id="csv" class="ghost" disabled>Download CSV</button>
+  </div>
+  <div id="list"></div>
+</section>
+</main>
+<footer>Your name and contact info are only visible to the event organizer. · <a href="#" id="adminLink">Organizer login</a></footer>
+
+<dialog id="dlg">
+  <form id="form" method="dialog">
+    <h3 id="dTitle" style="margin:0 0 .25rem;font:800 1.25rem 'Bricolage Grotesque',sans-serif"></h3>
+    <p id="dSub" class="sub" style="margin:0"></p>
+    <label for="name">Full name</label><input id="name" required maxlength="100" autocomplete="name">
+    <label for="email">Email</label><input id="email" type="email" required maxlength="200" autocomplete="email">
+    <label for="phone">Phone (optional)</label><input id="phone" type="tel" maxlength="30" autocomplete="tel">
+    <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p id="fmsg" class="msg" role="status"></p>
+    <div class="row">
+      <button type="button" class="ghost" id="cancel">Cancel</button>
+      <button type="submit" id="go">Sign up</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getFirestore,collection,doc,onSnapshot,runTransaction,writeBatch,getDocs,increment,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+// ====== 1. PASTE YOUR FIREBASE WEB CONFIG HERE (not a secret; rules + key restrictions protect you) ======
+const firebaseConfig = {
+  apiKey: "AIzaSyBz1ZvfR2XCCRWYM0ySK5q5xZL4uRnR6rk",
+  authDomain: "ocba-volunteers.firebaseapp.com",
+  projectId: "ocba-volunteers",
+  appId: "1:554544161210:web:f6518b3e5e9d17b73dfd83"
+};
+// ====== 2. Must match the email in firestore.rules (UI only; the rules are the real lock) ======
+const ADMIN_EMAIL = "ochs.naderer@gmail.com";
+
+// ====== 3. Shifts (edit freely, then use Admin > "Create missing shifts") ======
+const D1="Monday, January 25", D2="Tuesday, January 26", D3="Wednesday, January 27";
+const SLOTS = [
+ [D1,"11AM–4PM","Trade show registration + swag bag stuffing",4,"Need 2–4","m1"],
+ [D1,"11AM–4PM","Beer wrangler",2,"Need 1–2","m2"],
+ [D1,"3–6PM","Conference registration at Q1 meeting / opening reception",2,"Reception location TBD","m3"],
+ [D2,"8–10AM","Conference registration",6,"","t1"],
+ [D2,"10AM–12PM","Conference registration",2,"Need 1–2","t2"],
+ [D2,"10AM–12PM","Merch tent",4,"Need 2–4","t3"],
+ [D2,"10AM–5PM","Beer wrangler",2,"Intermittent job · Need 1–2","t8"],
+ [D2,"12–2PM","Conference registration",2,"Need 1–2","t4"],
+ [D2,"12–2PM","Merch tent",4,"Need 2–4","t5"],
+ [D2,"2–4PM","Conference registration",2,"Need 1–2","t6"],
+ [D2,"2–4PM","Merch tent",4,"Need 2–4","t7"],
+ [D2,"4–5PM","Merch tent",2,"Need 1–2","t12"],
+ [D2,"5–6PM","Beer wrangler",2,"","t10"],
+ [D2,"5–6PM","Trade show tear down",2,"","t11"],
+ [D3,"8–10AM","Conference registration",2,"","w1"],
+ [D3,"10AM–12PM","Conference registration",2,"","w6"],
+ [D3,"12–2PM","Conference registration",2,"","w7"],
+ [D3,"12–2PM","Tear down help",3,"Loading cars","w2"],
+ [D3,"3–5PM","Beer set-up and service, Ohio Beer Awards ceremony",2,"","w3"],
+ [D3,"5–7PM","General awards ceremony help",2,"","w4"],
+ [D3,"5–7PM","Awards ceremony beer",2,"","w5"],
+].map(([day,time,role,capacity,note,id],i)=>({id,day,time,role,capacity,note,order:i}));
+
+const app=initializeApp(firebaseConfig), db=getFirestore(app), auth=getAuth(app);
+const $=id=>document.getElementById(id);
+let slots={}, current=null, signupsCache=[];
+
+onSnapshot(collection(db,"slots"),snap=>{
+  slots={}; snap.forEach(d=>slots[d.id]=d.data());
+  $("status").textContent = snap.empty ? "No shifts yet. The organizer needs to create them first." : "Tap a shift to sign up. Spots update live.";
+  render();
+},e=>{$("status").textContent="Couldn’t load shifts. Check the Firebase config and rules."; console.error(e)});
+
+function render(){
+  const days=[...new Set(SLOTS.map(s=>s.day))];
+  $("days").innerHTML="";
+  for(const day of days){
+    const h=document.createElement("h2"); h.textContent=day; $("days").append(h);
+    for(const def of SLOTS.filter(s=>s.day===day)){
+      const s=slots[def.id]; if(!s) continue;
+      const left=s.capacity-s.filled, row=document.createElement("div"); row.className="slot";
+      const dots=Array.from({length:s.capacity},(_,i)=>`<span class="dot ${i<s.filled?"on":""}"></span>`).join("");
+      row.innerHTML=`<div class="time"></div><div><span class="role"></span><span class="note"></span><div class="dots" aria-hidden="true">${dots}</div></div><div></div>`;
+      row.querySelector(".time").textContent=s.time;
+      row.querySelector(".role").textContent=s.role;
+      row.querySelector(".note").textContent=def.note;
+      const cell=row.lastElementChild;
+      if(left<=0){cell.innerHTML='<span class="full">Filled</span>'}
+      else{const b=document.createElement("button");b.textContent="Sign up";b.setAttribute("aria-label",`Sign up for ${s.role}, ${day} ${s.time}. ${left} spot${left>1?"s":""} left`);b.onclick=()=>openDlg(def.id);cell.append(b)}
+      $("days").append(row);
+    }
+  }
+}
+
+function openDlg(id){
+  current=id; const s=slots[id];
+  $("dTitle").textContent=s.role; $("dSub").textContent=`${s.day} · ${s.time}`;
+  $("fmsg").textContent=""; $("fmsg").className="msg"; $("go").disabled=false;
+  $("dlg").showModal(); $("name").focus();
+}
+$("cancel").onclick=()=>$("dlg").close();
+
+$("form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if($("website").value) return; // honeypot: bots fill this in
+  const name=$("name").value.trim(), email=$("email").value.trim().toLowerCase(), phone=$("phone").value.trim();
+  $("go").disabled=true; $("fmsg").className="msg"; $("fmsg").textContent="Saving…";
+  try{
+    await runTransaction(db,async tx=>{
+      const ref=doc(db,"slots",current), snap=await tx.get(ref), s=snap.data();
+      if(s.filled>=s.capacity) throw new Error("full");
+      tx.update(ref,{filled:s.filled+1});
+      tx.set(doc(db,"signups",`${current}_${email}`),{slotId:current,name,email,phone,createdAt:serverTimestamp()});
+      // Confirmation email: picked up by the "Trigger Email from Firestore" extension (see README)
+      tx.set(doc(collection(db,"mail")),{to:email,template:{name:"signup-confirmation",
+        data:{name,slotId:current,day:s.day,time:s.time,role:s.role}}});
+    });
+    $("fmsg").className="msg ok"; $("fmsg").textContent=`You’re in! A confirmation email is on its way. See you ${slots[current].day}.`;
+    $("form").reset(); setTimeout(()=>$("dlg").close(),3500);
+  }catch(err){
+    $("fmsg").className="msg err";
+    $("fmsg").textContent = err.message==="full" ? "Sorry, that shift just filled. Pick another." : "Couldn’t sign you up. You may already be on this shift, or it just filled.";
+    $("go").disabled=false;
+  }
+});
+
+// ---------- Admin ----------
+$("adminLink").onclick=async e=>{e.preventDefault(); try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(x){console.error(x)}};
+onAuthStateChanged(auth,u=>{
+  const ok=u&&u.emailVerified&&u.email===ADMIN_EMAIL;
+  $("admin").hidden=!ok; if(ok)$("who").textContent=u.email;
+});
+$("seed").onclick=async()=>{
+  const b=writeBatch(db); let n=0;
+  for(const s of SLOTS) if(!slots[s.id]){b.set(doc(db,"slots",s.id),{day:s.day,time:s.time,role:s.role,capacity:s.capacity,filled:0,order:s.order});n++}
+  await b.commit(); alert(`Created ${n} shift(s).`);
+};
+$("load").onclick=async()=>{
+  const snap=await getDocs(collection(db,"signups"));
+  signupsCache=snap.docs.map(d=>({id:d.id,...d.data()}));
+  $("csv").disabled=!signupsCache.length;
+  const list=$("list"); list.innerHTML="";
+  for(const def of SLOTS){
+    const rows=signupsCache.filter(x=>x.slotId===def.id); if(!rows.length) continue;
+    const h=document.createElement("h3"); h.textContent=`${def.day} ${def.time} · ${def.role}`; h.style.fontSize="1rem"; list.append(h);
+    const ul=document.createElement("ul");
+    for(const r of rows){
+      const li=document.createElement("li"); li.textContent=`${r.name} · ${r.email}${r.phone?" · "+r.phone:""} `;
+      const rm=document.createElement("button"); rm.className="ghost"; rm.textContent="Remove"; rm.style.padding=".15rem .5rem";
+      rm.onclick=async()=>{
+        if(!confirm(`Remove ${r.name} from this shift?`)) return;
+        const b=writeBatch(db); b.delete(doc(db,"signups",r.id)); b.update(doc(db,"slots",r.slotId),{filled:increment(-1)});
+        await b.commit(); $("load").click();
+      };
+      li.append(rm); ul.append(li);
+    }
+    list.append(ul);
+  }
+  if(!signupsCache.length) list.textContent="No sign-ups yet.";
+};
+$("csv").onclick=()=>{
+  const q=v=>`"${String(v??"").replace(/"/g,'""').replace(/^([=+\-@])/,"'$1")}"`; // neutralize spreadsheet formulas
+  const lines=[["Day","Time","Role","Name","Email","Phone"].join(",")];
+  for(const def of SLOTS) for(const r of signupsCache.filter(x=>x.slotId===def.id))
+    lines.push([def.day,def.time,def.role,r.name,r.email,r.phone].map(q).join(","));
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([lines.join("\n")],{type:"text/csv"}));
+  a.download="volunteers.csv"; a.click();
+};
+</script>
+</body>
+</html>
