@@ -55,8 +55,8 @@ footer a{color:inherit}
 <p>Thanks so much for considering volunteering for the <a href="https://ohiocraftbeer.org/conference/">OCBA Conference in Cincy</a>! Use the form below to sign up for volunteer roles during the conference. Please select your preferred role and time slot.</p>
 <p>Remember that you must sign up for at least <strong>FOUR hours</strong> of volunteering to get free admission!</p>
 <p>Feel free to forward this sign up sheet to anyone you know who might be interested in helping out in exchange for free conference admission!</p>
-<p><strong>January 25-27, 2027</strong></p>
-<p><em>First Financial Center</em></p>
+<p><strong>January 25-27, 2027</strong>
+<br><em>First Financial Center</em></p>
 </div></header>
 <main class="wrap">
 <p id="status" class="sub">Loading shifts…</p>
@@ -110,7 +110,7 @@ const D1="Monday, January 25", D2="Tuesday, January 26", D3="Wednesday, January 
 const SLOTS = [
  [D1,"11AM–4PM","Trade show registration + swag bag stuffing",4,"4 Spots","m1"],
  [D1,"11AM–4PM","Beer wrangler",2,"2 Spots","m2"],
- [D1,"3–6PM","Conference registration at Q1 meeting / opening reception",2,"Reception location TBD","m3"],
+ [D1,"3–6PM","Conference registration at Q1 meeting / Opening Reception",2,"Reception location TBD","m3"],
  [D2,"8–10AM","Conference registration",6,"6 Spots","t1"],
  [D2,"10AM–12PM","Conference registration",2,"2 Spots","t2"],
  [D2,"10AM–12PM","Merch tent",4,"4 Spots","t3"],
@@ -127,8 +127,8 @@ const SLOTS = [
  [D3,"12–2PM","Conference registration",2,"2 Spots","w7"],
  [D3,"12–2PM","Tear down help",3,"3 Spots","w2"],
  [D3,"3–5PM","Beer set-up and service, Ohio Beer Awards ceremony",2,"2 Spots","w3"],
- [D3,"5–7PM","General awards ceremony help",2,"2 Spots","w4"],
- [D3,"5–7PM","Awards ceremony beer",2,"2 Spots","w5"],
+ [D3,"5–7PM","General Ohio Beer Awards ceremony help",2,"2 Spots","w4"],
+ [D3,"5–7PM","Ohio Beer Awards ceremony beer service",2,"2 Spots","w5"],
 ].map(([day,time,role,capacity,note,id],i)=>({id,day,time,role,capacity,note,order:i}));
 
 const app=initializeApp(firebaseConfig), db=getFirestore(app), auth=getAuth(app);
