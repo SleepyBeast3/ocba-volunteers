@@ -126,9 +126,9 @@ const SLOTS = [
  [D3,"10AM–12PM","Conference registration",2,"2 Spots","w6"],
  [D3,"12–2PM","Conference registration",2,"2 Spots","w7"],
  [D3,"12–2PM","Tear down help",3,"3 Spots","w2"],
- [D3,"3–5PM","Beer set-up and service, Ohio Beer Awards ceremony",2,"2 Spots","w3"],
- [D3,"5–7PM","General Ohio Beer Awards ceremony help",2,"2 Spots","w4"],
- [D3,"5–7PM","Ohio Beer Awards ceremony beer service",2,"2 Spots","w5"],
+ [D3,"3–5PM","Ohio Beer Awards ceremony beer set-up and service",2,"2 Spots","w3"],
+ [D3,"5–7PM","Ohio Beer Awards ceremony help",2,"2 Spots","w4"],
+ [D3,"5–7PM","Ohio Beer Awards beer wrangling",2,"2 Spots","w5"],
 ].map(([day,time,role,capacity,note,id],i)=>({id,day,time,role,capacity,note,order:i}));
 
 const app=initializeApp(firebaseConfig), db=getFirestore(app), auth=getAuth(app);
