@@ -104,6 +104,7 @@ const firebaseConfig = {
 };
 // ====== 2. Must match the email in firestore.rules (UI only; the rules are the real lock) ======
 const ADMIN_EMAIL = "ochs.naderer@gmail.com";
+const EMAIL_URL = "https://script.google.com/macros/s/AKfycbysKZGF4wgw3TG4nzxXrk3TimBO6JYR_7Ki611vpk-xg5e6oXzpnSDQUrCO10wP0FoJ/exec";
 
 // ====== 3. Shifts (edit freely, then use Admin > "Create missing shifts") ======
 const D1="Monday, January 25", D2="Tuesday, January 26", D3="Wednesday, January 27";
@@ -181,10 +182,8 @@ $("form").addEventListener("submit",async e=>{
       if(s.filled>=s.capacity) throw new Error("full");
       tx.update(ref,{filled:s.filled+1});
       tx.set(doc(db,"signups",`${current}_${email}`),{slotId:current,name,email,phone,createdAt:serverTimestamp()});
-      // Confirmation email: picked up by the "Trigger Email from Firestore" extension (see README)
-      tx.set(doc(collection(db,"mail")),{to:email,template:{name:"signup-confirmation",
-        data:{name,slotId:current,day:s.day,time:s.time,role:s.role}}});
     });
+    fetch(EMAIL_URL,{method:"POST",mode:"no-cors",body:JSON.stringify({slotId:current,email})}).catch(()=>{});
     $("fmsg").className="msg ok"; $("fmsg").textContent=`You’re in! A confirmation email is on its way. See you ${slots[current].day}.`;
     $("form").reset(); setTimeout(()=>$("dlg").close(),3500);
   }catch(err){
